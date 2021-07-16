@@ -95,7 +95,12 @@ to an encrypted one. Cannot be used in combination with implicit FTP.`,
 			Help:     "Disable using EPSV even if server advertises support",
 			Default:  false,
 			Advanced: true,
-		}, {
+		},  {
+			Name:     "disable_utf8",
+			Help:     "Disable using UTF8",
+			Default:  false,
+			Advanced: true,
+		},{
 			Name:     "disable_mlsd",
 			Help:     "Disable using MLSD even if server advertises support",
 			Default:  false,
@@ -142,6 +147,7 @@ type Options struct {
 	Concurrency       int                  `config:"concurrency"`
 	SkipVerifyTLSCert bool                 `config:"no_check_certificate"`
 	DisableEPSV       bool                 `config:"disable_epsv"`
+	DisableUTF8       bool                 `config:"disable_utf8"`
 	DisableMLSD       bool                 `config:"disable_mlsd"`
 	IdleTimeout       fs.Duration          `config:"idle_timeout"`
 	CloseTimeout      fs.Duration          `config:"close_timeout"`
@@ -286,6 +292,9 @@ func (f *Fs) ftpConnection(ctx context.Context) (c *ftp.ServerConn, err error) {
 	}
 	if f.opt.DisableEPSV {
 		ftpConfig = append(ftpConfig, ftp.DialWithDisabledEPSV(true))
+	}
+	if f.opt.DisableUTF8 {
+		ftpConfig = append(ftpConfig, ftp.DialWithDisabledUTF8(true))
 	}
 	if f.opt.DisableMLSD {
 		ftpConfig = append(ftpConfig, ftp.DialWithDisabledMLSD(true))
